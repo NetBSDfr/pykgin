@@ -56,10 +56,12 @@ class Pykgin(object):
             pkgin.append(arg)
         # execute pkgin
         popen = Popen(pkgin, stdout=dave, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
-        if(popen.wait()):
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
 
     def remove(self, *args):
@@ -91,14 +93,16 @@ class Pykgin(object):
             pkgin.append(arg)
         # execute pkgin
         popen = Popen(pkgin, stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
-        if(popen.wait()):
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         else:
             # retrieve output
-            output = popen.stdout.read()
+            output = stdoutdata
             # create a list which contain each packages
             output_whole_list = output.split('\n')
             for line in output_whole_list:
@@ -137,12 +141,15 @@ class Pykgin(object):
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-P", "search", arg], stdout=PIPE,
                 stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         # remove pkgin blabla
@@ -170,12 +177,15 @@ class Pykgin(object):
         output_list = []
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-P", "show-keep"], stdout=PIPE, stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         # remove last element (due to the last \n)
@@ -202,13 +212,15 @@ class Pykgin(object):
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-P", command, package], stdout=PIPE, \
                 stderr=PIPE)
-        # if pkgin errors
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         # remove last element (due to the last \n)
@@ -232,12 +244,15 @@ class Pykgin(object):
         output_list = []
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-P", command], stdout=PIPE, stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         # remove last element (due to the last \n)
@@ -262,12 +277,15 @@ class Pykgin(object):
         """Show what files a package provides."""
         # execute pkgin
         popen = Popen([PKGIN_PATH, command, package], stdout=PIPE, stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each files withou useless char
         output_list = [item.strip() for item in output.split('\n')[1:-1]]
 
@@ -284,12 +302,15 @@ class Pykgin(object):
         output_list = []
         # execute pkgin
         popen = Popen([PKGIN_PATH, "export"], stdout=PIPE, stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         if(filename):
             save = open(filename, "w")
             save.write(output)
@@ -315,12 +336,15 @@ class Pykgin(object):
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-y", "import", filename], stdout=PIPE,
                 stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         for line in output_whole_list:
@@ -371,12 +395,15 @@ class Pykgin(object):
         # execute pkgin
         popen = Popen([PKGIN_PATH, "-y", command], stdout=PIPE, stdin=PIPE,
                 stderr=PIPE)
-        if(popen.wait()):
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
             # remove the line feed
-            error = popen.stderr.read()[0:-1]
+            error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = popen.stdout.read()
+        output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.split('\n')
         # add infos to a dict
