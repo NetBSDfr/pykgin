@@ -138,7 +138,6 @@ class Pykgin(object):
 
     def search(self, arg):
         """Search for a package."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "-P", "search", arg], stdout=PIPE,
                 stderr=PIPE)
@@ -156,6 +155,7 @@ class Pykgin(object):
         # remove pkgin blabla
         output_whole_list = output_whole_list[0:-5]
         # create a new list in which package informations are separate
+        output_list = []
         for pkg in output_whole_list:
             # split the string
             current = pkg.split(' ', 2)
@@ -175,7 +175,6 @@ class Pykgin(object):
 
     def show_keep(self, command="show-keep"):
         """Display "non auto-removable" packages."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "-P", command], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -192,6 +191,7 @@ class Pykgin(object):
         # remove last element (due to the last \n)
         output_whole_list.pop()
         # create a new list in which package informations are separate
+        output_list = []
         for pkg in output_whole_list:
             current = pkg.split(' ', 1)
             output_list.append(self.__extract_package_version(current[0]))
@@ -212,7 +212,6 @@ class Pykgin(object):
 
     def show_deps(self, package, command="show-deps"):
         """Display direct dependencies."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "-P", command, package], stdout=PIPE, \
                 stderr=PIPE)
@@ -234,6 +233,7 @@ class Pykgin(object):
             # remove the first element (pkgin blabla)
             output_whole_list.pop(0)
         # create a new list in which package informations are separate
+        output_list = []
         for pkg in output_whole_list:
             output_list.append(self.__extract_package_version(pkg))
 
@@ -245,7 +245,6 @@ class Pykgin(object):
 
     def list(self, command="list"):
         """Lists installed packages."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "-P", command], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -262,6 +261,7 @@ class Pykgin(object):
         # remove last element (due to the last \n)
         output_whole_list.pop()
         # create a new list in which package name and description are separate
+        output_list = []
         for pkg in output_whole_list:
             # split the string
             split = pkg.split(' ', 1)
@@ -301,7 +301,6 @@ class Pykgin(object):
     @staticmethod
     def export_pkg(filename=None):
         """Export "non auto-removable" packages to stdout."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "export"], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -320,6 +319,7 @@ class Pykgin(object):
         output_whole_list = [item.strip() for item in output.split('\n')[1:-1]]
         # create a list containing dict in which package and location are
         # separate
+        output_list = []
         for item in output_whole_list:
             # dict for the current package
             dict_tmp = {}
@@ -448,7 +448,6 @@ class Pykgin(object):
 
     def show_category(self, category):
         """Show packages belonging to category."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "show-category", category], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -476,7 +475,6 @@ class Pykgin(object):
 
     def show_pkg_category(self, package):
         """Show package's category"""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "show-pkg-category", package], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -502,7 +500,6 @@ class Pykgin(object):
 
     def show_all_categories(self):
         """Show all categories."""
-        output_list = []
         # execute pkgin
         popen = Popen([self.pkgin_bin, "show-all-categories"], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
@@ -520,6 +517,27 @@ class Pykgin(object):
         output_list.pop()
 
         return output_list
+
+    def pkg_content(self, package):
+        """Show remote package's content."""
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "pkg-content", package], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+
+        # retrieve output
+        output = stdoutdata
+        # create a list which contain each packages
+        output_list = output.split('\n')
+        # remove last element (due to the last \n)
+        output_list.pop()
+
+        return output_list[2::]
 
 if __name__ == "__main__":
     print __doc__
