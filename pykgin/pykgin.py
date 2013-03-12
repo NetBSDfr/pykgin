@@ -539,6 +539,35 @@ class Pykgin(object):
 
         return output_list[2::]
 
+    def pkg_build_defs(self, package):
+        """Show remote package's build definitions."""
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "pkg-build-defs", package], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+
+        # retrieve output
+        output = stdoutdata
+        # create a list which contain each packages
+        output_raw_list = output.split('\n')
+        # extract and sort each infos
+        output_list = {}
+        for element in output_raw_list[2:-1]:
+            # separate name and value
+            raw = element.split("=")
+            # add infos in the dict
+            try:
+                output_list[raw[0]].append(raw[1])
+            except KeyError:
+                output_list[raw[0]] = [raw[1]]
+
+        return output_list
+
 if __name__ == "__main__":
     print __doc__
 
