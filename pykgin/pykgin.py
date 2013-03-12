@@ -45,7 +45,7 @@ class Pykgin(object):
         return output
 
     @staticmethod
-    def __execute(cmd, *args):
+    def __execute(pkgin_bin, cmd, *args):
         """Execute pkgin with cmd in arg. Raise an exception
         if there are a pkgin error."""
         dave = open("/dev/null", "w")
@@ -67,15 +67,15 @@ class Pykgin(object):
 
     def remove(self, *args):
         """Remove packages and depending packages."""
-        self.__execute("remove", *args)
+        self.__execute(self.pkgin_bin, "remove", *args)
 
     def keep(self, *args):
         """Marks package as "non auto-removable"."""
-        self.__execute("keep", *args)
+        self.__execute(self.pkgin_bin, "keep", *args)
 
     def unkeep(self, *args):
         """Marks package as "auto-removable"."""
-        self.__execute("unkeep", *args)
+        self.__execute(self.pkgin_bin, "unkeep", *args)
 
     def installed(self, package):
         """Say if package is installed or not."""
@@ -130,11 +130,11 @@ class Pykgin(object):
 
     def clean(self):
         """Clean packages cache."""
-        self.__execute("clean")
+        self.__execute(self.pkgin_bin, "clean")
 
     def update(self):
         """Creates and populates the initial database."""
-        self.__execute("update")
+        self.__execute(self.pkgin_bin, "update")
 
     def search(self, arg):
         """Search for a package."""
@@ -173,11 +173,11 @@ class Pykgin(object):
 
         return output_list
 
-    def showkeep(self):
+    def show_keep(self, command="show-keep"):
         """Display "non auto-removable" packages."""
         output_list = []
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "-P", "show-keep"], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "-P", command], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -198,6 +198,9 @@ class Pykgin(object):
 
         return output_list
 
+    def show_no_keep(self):
+        """Display "auto-removable" packages."""
+        return self.show_keep("show-no-keep")
 
     def show_full_deps(self, package):
         """Display dependencies recursively."""
@@ -207,7 +210,7 @@ class Pykgin(object):
         """Display reverse dependencies recursively."""
         return self.show_deps(package, "show-rev-deps")
 
-    def show_deps(self, package, command = "show-deps"):
+    def show_deps(self, package, command="show-deps"):
         """Display direct dependencies."""
         output_list = []
         # execute pkgin
@@ -240,7 +243,7 @@ class Pykgin(object):
         """Lists available packages."""
         return self.list("avail")
 
-    def list(self, command = "list"):
+    def list(self, command="list"):
         """Lists installed packages."""
         output_list = []
         # execute pkgin
@@ -273,8 +276,7 @@ class Pykgin(object):
 
         return output_list
 
-    @staticmethod
-    def provides(package, command="provides"):
+    def provides(self, package, command="provides"):
         """Show what files a package provides."""
         # execute pkgin
         popen = Popen([self.pkgin_bin, command, package], stdout=PIPE, stderr=PIPE)
@@ -295,7 +297,6 @@ class Pykgin(object):
     def requires(self, package):
         """Show what files a package provides."""
         return self.provides(package, "requires")
-
 
     @staticmethod
     def export_pkg(filename=None):
