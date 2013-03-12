@@ -22,11 +22,12 @@ DEFAULT_ARGS = ["-V", "-y"]
 class Pykgin(object):
     """Pkgin class provides methods to impletement pkgin in your code."""
 
-    def __init__(self):
+    def __init__(self, pkgin_bin=PKGIN_PATH):
         """Constructor."""
         # re parser for package name and version
         self.package_re = \
                 re.compile(r'(?P<name>.+(-[^-])*)-(?P<version>.+)')
+        self.pkgin_bin = pkgin_bin
 
     @staticmethod
     def __extract_package_version(package_string):
@@ -49,7 +50,7 @@ class Pykgin(object):
         if there are a pkgin error."""
         dave = open("/dev/null", "w")
         # create the command list
-        pkgin = [PKGIN_PATH]
+        pkgin = [pkgin_bin]
         pkgin.extend(DEFAULT_ARGS)
         pkgin.append(cmd)
         for arg in args:
@@ -88,7 +89,7 @@ class Pykgin(object):
     def install(self, *args):
         """Performs packages installation or upgrade."""
         # create the command list
-        pkgin = [PKGIN_PATH, "-y", "install"]
+        pkgin = [self.pkgin_bin, "-y", "install"]
         for arg in args:
             pkgin.append(arg)
         # execute pkgin
@@ -139,7 +140,7 @@ class Pykgin(object):
         """Search for a package."""
         output_list = []
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-P", "search", arg], stdout=PIPE,
+        popen = Popen([self.pkgin_bin, "-P", "search", arg], stdout=PIPE,
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
@@ -176,7 +177,7 @@ class Pykgin(object):
         """Display "non auto-removable" packages."""
         output_list = []
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-P", "show-keep"], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "-P", "show-keep"], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -210,7 +211,7 @@ class Pykgin(object):
         """Display direct dependencies."""
         output_list = []
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-P", command, package], stdout=PIPE, \
+        popen = Popen([self.pkgin_bin, "-P", command, package], stdout=PIPE, \
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
@@ -243,7 +244,7 @@ class Pykgin(object):
         """Lists installed packages."""
         output_list = []
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-P", command], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "-P", command], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -276,7 +277,7 @@ class Pykgin(object):
     def provides(package, command="provides"):
         """Show what files a package provides."""
         # execute pkgin
-        popen = Popen([PKGIN_PATH, command, package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, command, package], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -301,7 +302,7 @@ class Pykgin(object):
         """Export "non auto-removable" packages to stdout."""
         output_list = []
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "export"], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "export"], stdout=PIPE, stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -334,7 +335,7 @@ class Pykgin(object):
     def import_pkg(self, filename):
         """Import "non auto-removable" package list from file."""
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-y", "import", filename], stdout=PIPE,
+        popen = Popen([self.pkgin_bin, "-y", "import", filename], stdout=PIPE,
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
@@ -372,7 +373,7 @@ class Pykgin(object):
     def autoremove(self):
         """Autoremove oprhan dependencies."""
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "autoremove"], stdout=PIPE, stdin=PIPE)
+        popen = Popen([self.pkgin_bin, "autoremove"], stdout=PIPE, stdin=PIPE)
         # send "y" to continu e and retrieve output at the same time
         output = popen.communicate("y\n")
         # create a list which contain each packages
@@ -393,7 +394,7 @@ class Pykgin(object):
     def upgrade(self, command="upgrade"):
         """Upgrade main packages to their newer versions."""
         # execute pkgin
-        popen = Popen([PKGIN_PATH, "-y", command], stdout=PIPE, stdin=PIPE,
+        popen = Popen([self.pkgin_bin, "-y", command], stdout=PIPE, stdin=PIPE,
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
@@ -443,6 +444,29 @@ class Pykgin(object):
     def full_upgrade(self):
         """Upgrade all packages to their newer versions."""
         return self.upgrade("full-upgrade")
+
+    def show_all_categories(self):
+        """Show all categories."""
+        output_list = []
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "show-all-categories"], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+        # retrieve output
+        output = stdoutdata
+        # create a list which contain each packages
+        output_list = output.split('\n')
+        # remove last element (due to the last \n)
+        output_list.pop()
+        # create a new list in which package name and description are separate
+
+        return output_list
+
 
 if __name__ == "__main__":
     print __doc__
