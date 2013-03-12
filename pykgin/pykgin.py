@@ -16,7 +16,7 @@ PKGIN_PATH = "/home/solevis/src/pkgin/pkgin"
 INSTALLED = 0
 OUTDATED = 1
 GREATER = 2
-STATES = {"=":INSTALLED, "<":OUTDATED, ">":GREATER}
+STATES = {'=':INSTALLED, "<":OUTDATED, ">":GREATER}
 DEFAULT_ARGS = ["-V", "-y"]
 
 class Pykgin(object):
@@ -559,7 +559,7 @@ class Pykgin(object):
         output_list = {}
         for element in output_raw_list[2:-1]:
             # separate name and value
-            raw = element.split("=")
+            raw = element.split('=')
             # add infos in the dict
             try:
                 output_list[raw[0]].append(raw[1])
@@ -567,6 +567,26 @@ class Pykgin(object):
                 output_list[raw[0]] = [raw[1]]
 
         return output_list
+
+    def pkg_descr(self, package):
+        """Show remote package's long-description."""
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "pkg-descr", package], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+
+        # retrieve output
+        output = stdoutdata
+        output_split = output.split('\n')
+        # remove first line
+        output_clean = '\n'.join(output_split[1:-1])
+
+        return output_clean
 
 if __name__ == "__main__":
     print __doc__
