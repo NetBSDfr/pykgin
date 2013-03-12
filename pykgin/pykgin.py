@@ -473,6 +473,32 @@ class Pykgin(object):
 
         return output_list
 
+    def show_pkg_category(self, package):
+        """Show package's category"""
+        output_list = []
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "show-pkg-category", package], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+        # retrieve output
+        output = stdoutdata
+        # create a list which contain each packages
+        output_raw_list = output.split('\n')
+        # remove last element (due to the last \n)
+        output_raw_list.pop()
+        # extract packages informations
+        output_list = []
+        for element in output_raw_list:
+            category = element.split(' ')[0]
+            output_list.append(category)
+
+        return output_list
+
     def show_all_categories(self):
         """Show all categories."""
         output_list = []
