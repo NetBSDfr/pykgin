@@ -445,6 +445,34 @@ class Pykgin(object):
         """Upgrade all packages to their newer versions."""
         return self.upgrade("full-upgrade")
 
+    def show_category(self, category):
+        """Show packages belonging to category."""
+        output_list = []
+        # execute pkgin
+        popen = Popen([self.pkgin_bin, "show-category", category], stdout=PIPE, stderr=PIPE)
+        # retrieve output streams
+        (stdoutdata, stderrdata) = popen.communicate()
+        # if pkgin error
+        if(stderrdata):
+            # remove the line feed
+            error = stderrdata[0:-1]
+            raise PykginError(error)
+        # retrieve output
+        output = stdoutdata
+        # create a list which contain each packages
+        output_raw_list = output.split('\n')
+        # remove last element (due to the last \n)
+        output_raw_list.pop()
+        # extract packages informations
+        output_list = []
+        for element in output_raw_list:
+            print element
+            package_raw = element.split("- ")[1]
+            print package_raw
+            output_list.append(self.__extract_package_version(package_raw))
+
+        return output_list
+
     def show_all_categories(self):
         """Show all categories."""
         output_list = []
@@ -463,10 +491,8 @@ class Pykgin(object):
         output_list = output.split('\n')
         # remove last element (due to the last \n)
         output_list.pop()
-        # create a new list in which package name and description are separate
 
         return output_list
-
 
 if __name__ == "__main__":
     print __doc__
