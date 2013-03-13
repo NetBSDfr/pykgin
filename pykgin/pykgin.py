@@ -243,6 +243,20 @@ class Pykgin(object):
         """Lists available packages."""
         return self.list("avail")
 
+    def avail_categories(self):
+        """Lists available packages sorted in categories."""
+        # retrieve categories
+        categories = self.show_all_categories()
+        # for each category, retrieve packages
+        output = {}
+        for category in categories:
+            packages = self.show_category(category)
+            output[category] = packages
+
+        return output
+
+
+
     def list(self, command="list"):
         """Lists installed packages."""
         # execute pkgin
@@ -279,7 +293,8 @@ class Pykgin(object):
     def provides(self, package, command="provides"):
         """Show what files a package provides."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, command, package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, command, package], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -298,8 +313,7 @@ class Pykgin(object):
         """Show what files a package provides."""
         return self.provides(package, "requires")
 
-    @staticmethod
-    def export_pkg(filename=None):
+    def export_pkg(self, filename=None):
         """Export "non auto-removable" packages to stdout."""
         # execute pkgin
         popen = Popen([self.pkgin_bin, "export"], stdout=PIPE, stderr=PIPE)
@@ -405,9 +419,9 @@ class Pykgin(object):
             error = stderrdata[0:-1]
             raise PykginError(error)
         # retrieve output
-        output = stdoutdata
+        output_raw = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output_raw.split('\n')
         # add infos to a dict
         output = {}
         for line in output_whole_list:
@@ -449,7 +463,8 @@ class Pykgin(object):
     def show_category(self, category):
         """Show packages belonging to category."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "show-category", category], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "show-category", category], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -466,9 +481,7 @@ class Pykgin(object):
         # extract packages informations
         output_list = []
         for element in output_raw_list:
-            print element
             package_raw = element.split("- ")[1]
-            print package_raw
             output_list.append(self.__extract_package_version(package_raw))
 
         return output_list
@@ -476,7 +489,9 @@ class Pykgin(object):
     def show_pkg_category(self, package):
         """Show package's category"""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "show-pkg-category", package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "show-pkg-category", package],
+                      stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -501,7 +516,8 @@ class Pykgin(object):
     def show_all_categories(self):
         """Show all categories."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "show-all-categories"], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "show-all-categories"], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -521,7 +537,8 @@ class Pykgin(object):
     def pkg_content(self, package):
         """Show remote package's content."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "pkg-content", package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "pkg-content", package], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -542,7 +559,8 @@ class Pykgin(object):
     def pkg_build_defs(self, package):
         """Show remote package's build definitions."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "pkg-build-defs", package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "pkg-build-defs", package], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
@@ -571,7 +589,8 @@ class Pykgin(object):
     def pkg_descr(self, package):
         """Show remote package's long-description."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "pkg-descr", package], stdout=PIPE, stderr=PIPE)
+        popen = Popen([self.pkgin_bin, "pkg-descr", package], stdout=PIPE,
+                      stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
         # if pkgin error
