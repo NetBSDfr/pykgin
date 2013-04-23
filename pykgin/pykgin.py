@@ -12,7 +12,7 @@ from pykgin_exceptions import PykginError
 import re
 
 # variables
-PKGIN_PATH = "/home/solevis/src/pkgin/pkgin"
+PKGIN_PATH = "/usr/pkg/bin/pkgin"
 INSTALLED = 0
 OUTDATED = 1
 GREATER = 2
@@ -480,9 +480,17 @@ class Pykgin(object):
         output_raw_list.pop()
         # extract packages informations
         output_list = []
-        for element in output_raw_list:
-            package_raw = element.split("- ")[1]
-            output_list.append(self.__extract_package_version(package_raw))
+        for pkg in output_raw_list:
+            # split the string
+            split = pkg.split(' ', 1)
+            # extract version and package name
+            package = self.__extract_package_version(split[0])
+            # remove leading whitespace from the description
+            description = split[1].strip()
+            # add the desctription to the dictionnary
+            package['description'] = description
+            # add the package dictionnary to the list
+            output_list.append(package)
 
         return output_list
 
