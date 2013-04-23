@@ -105,7 +105,7 @@ class Pykgin(object):
             # retrieve output
             output = stdoutdata
             # create a list which contain each packages
-            output_whole_list = output.split('\n')
+            output_whole_list = output.splitlines()
             for line in output_whole_list:
                 if line.find("to be installed:") != -1:
                     # extract usefull string
@@ -151,7 +151,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output.splitlines()
         # remove pkgin blabla
         output_whole_list = output_whole_list[0:-5]
         # create a new list in which package informations are separate
@@ -187,7 +187,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output.splitlines()
         # remove last element (due to the last \n)
         output_whole_list.pop()
         # create a new list in which package informations are separate
@@ -225,7 +225,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output.splitlines()
         # remove last element (due to the last \n)
         output_whole_list.pop()
         # check if the list is empty
@@ -271,7 +271,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output.splitlines()
         # remove last element (due to the last \n)
         output_whole_list.pop()
         # create a new list in which package name and description are separate
@@ -305,7 +305,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each files withou useless char
-        output_list = [item.strip() for item in output.split('\n')[1:-1]]
+        output_list = [item.strip() for item in output.splitlines()[1:-1]]
 
         return output_list
 
@@ -330,7 +330,7 @@ class Pykgin(object):
             save = open(filename, "w")
             save.write(output)
         # create a list which contain each files withou useless char
-        output_whole_list = [item.strip() for item in output.split('\n')[1:-1]]
+        output_whole_list = [item.strip() for item in output.splitlines()[1:-1]]
         # create a list containing dict in which package and location are
         # separate
         output_list = []
@@ -362,7 +362,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output.split('\n')
+        output_whole_list = output.splitlines()
         for line in output_whole_list:
             if line.find("to be installed:") != -1:
                 # extract usefull string
@@ -392,7 +392,7 @@ class Pykgin(object):
         # send "y" to continu e and retrieve output at the same time
         output = popen.communicate("y\n")
         # create a list which contain each packages
-        output_whole_list = output[0].split('\n')
+        output_whole_list = output[0].splitlines()
         for line in output_whole_list:
             if line.find("to be autoremoved:") != -1:
                 # extract usefull string
@@ -421,7 +421,7 @@ class Pykgin(object):
         # retrieve output
         output_raw = stdoutdata
         # create a list which contain each packages
-        output_whole_list = output_raw.split('\n')
+        output_whole_list = output_raw.splitlines()
         # add infos to a dict
         output = {}
         for line in output_whole_list:
@@ -475,7 +475,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_raw_list = output.split('\n')
+        output_raw_list = output.splitlines()
         # remove last element (due to the last \n)
         output_raw_list.pop()
         # extract packages informations
@@ -502,7 +502,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_raw_list = output.split('\n')
+        output_raw_list = output.splitlines()
         # remove last element (due to the last \n)
         output_raw_list.pop()
         # extract packages informations
@@ -528,7 +528,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_list = output.split('\n')
+        output_list = output.splitlines()
         # remove last element (due to the last \n)
         output_list.pop()
 
@@ -550,7 +550,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_list = output.split('\n')
+        output_list = output.splitlines()
         # remove last element (due to the last \n)
         output_list.pop()
 
@@ -572,7 +572,7 @@ class Pykgin(object):
         # retrieve output
         output = stdoutdata
         # create a list which contain each packages
-        output_raw_list = output.split('\n')
+        output_raw_list = output.splitlines()
         # extract and sort each infos
         output_list = {}
         for element in output_raw_list[2:-1]:
@@ -601,7 +601,7 @@ class Pykgin(object):
 
         # retrieve output
         output = stdoutdata
-        output_split = output.split('\n')
+        output_split = output.splitlines()
         # remove first line
         output_clean = '\n'.join(output_split[1:-1])
 
