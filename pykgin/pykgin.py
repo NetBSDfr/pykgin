@@ -188,8 +188,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_whole_list.pop()
         # create a new list in which package informations are separate
         output_list = []
         for pkg in output_whole_list:
@@ -226,8 +224,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_whole_list.pop()
         # check if the list is empty
         if(len(output_whole_list) != 0):
             # remove the first element (pkgin blabla)
@@ -272,8 +268,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_whole_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_whole_list.pop()
         # create a new list in which package name and description are separate
         output_list = []
         for pkg in output_whole_list:
@@ -476,8 +470,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_raw_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_raw_list.pop()
         # extract packages informations
         output_list = []
         for pkg in output_raw_list:
@@ -511,8 +503,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_raw_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_raw_list.pop()
         # extract packages informations
         output_list = []
         for element in output_raw_list:
@@ -537,8 +527,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_list.pop()
 
         return output_list
 
@@ -559,8 +547,6 @@ class Pykgin(object):
         output = stdoutdata
         # create a list which contain each packages
         output_list = output.splitlines()
-        # remove last element (due to the last \n)
-        output_list.pop()
 
         return output_list[2::]
 
