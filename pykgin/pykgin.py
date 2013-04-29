@@ -208,7 +208,19 @@ class Pykgin(object):
         """Display reverse dependencies recursively."""
         return self.show_deps(package, "show-rev-deps")
 
-    def show_deps(self, package, command="show-deps"):
+    def show_no_keep_raw(self):
+        """Display "auto-removable" packages."""
+        return self.show_keep("show-no-keep", raw=True)
+
+    def show_full_deps_raw(self, package):
+        """Display dependencies recursively."""
+        return self.show_deps(package, "show-full-deps", raw=True)
+
+    def show_rev_deps_raw(self, package):
+        """Display reverse dependencies recursively."""
+        return self.show_deps(package, "show-rev-deps", raw=True)
+
+    def show_deps(self, package, command="show-deps", raw=False):
         """Display direct dependencies."""
         # execute pkgin
         popen = Popen([self.pkgin_bin, "-P", command, package], stdout=PIPE, \
@@ -228,6 +240,10 @@ class Pykgin(object):
         if(len(output_whole_list) != 0):
             # remove the first element (pkgin blabla)
             output_whole_list.pop(0)
+
+        # return raw value if needed
+        if raw:
+            return "\n".join(elem.strip() for elem in output_whole_list)
         # create a new list in which package informations are separate
         output_list = []
         for pkg in output_whole_list:
