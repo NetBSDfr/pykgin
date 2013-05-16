@@ -86,10 +86,14 @@ class Pykgin(object):
         return False
 
 
-    def install(self, *args):
+    def install(self, *args, perform=True):
         """Performs packages installation or upgrade."""
         # create the command list
-        pkgin = [self.pkgin_bin, "-y", "install"]
+        if perform:
+            ask = "-y"
+        else:
+            ask = "-n"
+        pkgin = [self.pkgin_bin, ask, "install"]
         for arg in args:
             pkgin.append(arg)
         # execute pkgin
@@ -357,10 +361,14 @@ class Pykgin(object):
 
         return output_list
 
-    def import_pkg(self, filename):
+    def import_pkg(self, filename, perform=True):
         """Import "non auto-removable" package list from file."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "-y", "import", filename], stdout=PIPE,
+        if perform:
+            ask = "-y"
+        else:
+            ask = "-n"
+        popen = Popen([self.pkgin_bin, ask, "import", filename], stdout=PIPE,
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
@@ -416,10 +424,14 @@ class Pykgin(object):
 
                 return(packages)
 
-    def upgrade(self, command="upgrade"):
+    def upgrade(self, command="upgrade", perform=True):
         """Upgrade main packages to their newer versions."""
         # execute pkgin
-        popen = Popen([self.pkgin_bin, "-y", command], stdout=PIPE, stdin=PIPE,
+        if perform:
+            ask = "-y"
+        else:
+            ask = "-n"
+        popen = Popen([self.pkgin_bin, ask, command], stdout=PIPE, stdin=PIPE,
                 stderr=PIPE)
         # retrieve output streams
         (stdoutdata, stderrdata) = popen.communicate()
