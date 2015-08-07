@@ -7,6 +7,7 @@ This module lets you use pkgin in a python script.
 """
 
 # modules
+from os import path
 from subprocess import Popen, PIPE
 from pykgin_exceptions import PykginError
 import re
@@ -24,10 +25,15 @@ class Pykgin(object):
 
     def __init__(self, pkgin_bin=PKGIN_PATH):
         """Constructor."""
+        # Be sure that pkgin is present.
+        try:
+            os.path.isfile(PKGIN_PATH)
+            self.pkgin_bin = pkgin_bin
+        except:
+            raise ValueError("Pkgin is not in the $PATH or not installed.")
         # re parser for package name and version
         self.package_re = \
                 re.compile(r'(?P<name>.+(-[^-])*)-(?P<version>.+)')
-        self.pkgin_bin = pkgin_bin
 
     @staticmethod
     def __extract_package_version(package_string):
