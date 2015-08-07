@@ -86,7 +86,7 @@ class Pykgin(object):
         return False
 
 
-    def install(self, *args, perform=True):
+    def install(self, perform=True, *args):
         """Performs packages installation or upgrade."""
         # create the command list
         if perform:
