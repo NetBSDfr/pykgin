@@ -3,6 +3,8 @@ Pykgin
 
 Pykgin is an API to use pkgin in Python program.
 
+# This project is no longer maintained, but if you are willing to take over, we'd be happy to have you onboard!
+
 Example
 =======
 
